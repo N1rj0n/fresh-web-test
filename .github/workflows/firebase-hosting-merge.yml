@@ -20,23 +20,6 @@ jobs:
           echo "$FIREBASE_SERVICE_ACCOUNT" > service-account.json
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
           
-          # Deploy and capture output to handle the "already active version" API bug
-          set +e
-          DEPLOY_OUTPUT=$(npx firebase-tools deploy --only hosting --project new-fresh-start-web-test 2>&1)
-          DEPLOY_STATUS=$?
-          set -e
-          echo "$DEPLOY_OUTPUT"
-          
-          # Clean up credentials
+          npx firebase-tools deploy --only hosting --project new-fresh-start-web-test --non-interactive
           rm service-account.json
-          
-          # Handle exit status
-          if [ $DEPLOY_STATUS -ne 0 ]; then
-            if echo "$DEPLOY_OUTPUT" | grep -q "is the current active version"; then
-              echo "Firebase deployment completed successfully (the active release on Firebase is already up-to-date)."
-              exit 0
-            else
-              exit $DEPLOY_STATUS
-            fi
-          fi
 
