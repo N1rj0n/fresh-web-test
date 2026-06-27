@@ -14,9 +14,9 @@ jobs:
       - name: Build site
         run: npm run build
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: new-fresh-start-web-test
-          channelId: live
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          echo "$FIREBASE_SERVICE_ACCOUNT" > service-account.json
+          GOOGLE_APPLICATION_CREDENTIALS=service-account.json npx firebase-tools deploy --only hosting --project new-fresh-start-web-test
+          rm service-account.json
