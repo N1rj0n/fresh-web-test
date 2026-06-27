@@ -21,8 +21,10 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
           
           # Deploy and capture output to handle the "already active version" API bug
+          set +e
           DEPLOY_OUTPUT=$(npx firebase-tools deploy --only hosting --project new-fresh-start-web-test 2>&1)
           DEPLOY_STATUS=$?
+          set -e
           echo "$DEPLOY_OUTPUT"
           
           # Clean up credentials
